@@ -6,11 +6,11 @@ res = [640,480]
 const framerate = 30
 Luxor.Point(x::Array) = Luxor.Point(Tuple(x[1:2]))
 
-O      = [ 0.0,  0, 0]
-UP     = [ 0.0, -1, 0]
-DOWN   = [ 0.0,  1, 0]
-LEFT   = [-1.0,  0, 0]
-RIGHT  = [ 1.0,  0, 0]
+O     = [ 0.0,  0, 0]
+DOWN  = [ 0.0,  1, 0]
+UP    = [ 0.0, -1, 0]
+LEFT  = [ 1.0,  0, 0]
+RIGHT = [ 1.0,  0, 0]
 
 abstract type Object
 end
@@ -28,6 +28,7 @@ end
 Arc(o::Array,r::Float64,a1::Real,a2::Real) = Arc(o,r,a1,a2,0,x->x,Dict([]))
 Arc(o::Array,r::Float64,a1::Real,a2::Real,op::Float64) = Arc(o,r,a1,a2,op,x->x,Dict([]))
 Circle(o::Array,r::Float64) = Arc(o,r,0,2π)
+Circle(o::Array,r::Float64,op::Float64) = Arc(o,r,0,2π,op)
 
 function drawobject(o::Arc)
   setopacity(o.opacity)
@@ -67,51 +68,69 @@ end
 function FadeInObject(o::Object,T=1)
   nframes = floor(T*framerate)
   interpol(t) = t
+  ret = []
   for (i,t) in enumerate(range(0,T,length=nframes))  
-    o.opacity = interpol(t) 
-    push!(frames,drawframe())
+    push!(ret, ()->(o.opacity = interpol(t)))
   end
+  ret
 end
 
-function CreateObject(o::Object,T::Real=1)
+function CreateObject(o::Object,T::Real=1;easefn=easingflat)
   nframes = floor(T*framerate)
+  ret = []
   for (i,t) in enumerate(range(0,T,length=nframes))
-    o.transform = x->drawpartial(x,t/T)
-    push!(frames,drawframe())
+    push!(ret, ()->(o.transform = x->drawpartial(x, easefn(t,0,1,T)  )))
   end
+  ret
 end
 
 function Wait(T::Real=1.0)
   nframes= floor(T*framerate)
+  ret = []
   for (i,t) in enumerate(range(0,T,length=nframes))
-    push!(frames,drawframe())
+    push!(ret, ()->nothing)
   end
+  ret
 end
 
+function Play(actions...)
+  nframes = maximum(length.(actions))
+  i=1
+  while( i<=nframes)
+    for action in actions
+      if i<=length(action) 
+       	action[i]()
+      end
+    end
+    push!(frames,drawframe())
+    i=i+1
+  end
+end
 
 function drawframe()
   img = Drawing(res...,:image)
   origin()
   sethue("white")
-  for o in objects
+  for o in scene 
     drawobject(o.transform(o))
   end
   return image_as_matrix() 
 end
-
-C1 = Circle(O,10.0)
-C1.opacity=1.0
-C2 = Circle(O.+50*UP,10.0);
-L1 = Line(O,20*UP)
-objects = Array{Object}([C1,C2,L1])
-img = drawframe()
-save("test.png",Array{RGB{N0f8}}(img))
-
 frames = Array{ Matrix{RGB{N0f8}} }([])
-CreateObject(C1,2)
-L1.opacity=1.0
-CreateObject(L1,1)
-Wait(1)
+
+C1 = Circle(O, 10.0)
+C2 = Circle(O.+50*UP, 10.0, 1.0)
+L1 = Line(O,C2.centre, 1.0)
+C3 = Circle((C1.centre + C2.centre)/2.0 .+10, 100.0, 1.0)
+
+scene = Array{Object}([C1,])
+Play( FadeInObject(C1,1) )
+push!(scene,C2,L1)
+push!(scene,C3)
+Play( CreateObject(C3,3,easefn=easeinoutcubic), CreateObject(C2,2), CreateObject(L1,3)  )
+Play( Wait(2) )
+
+
 save("test.mp4",frames,framerate=30)
 run(`mpv test.mp4`)
 
