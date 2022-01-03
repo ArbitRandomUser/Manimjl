@@ -1,3 +1,9 @@
+Manimish libarary for math animations 
+Javis.jl is probably what you really want 
+
+minimal example
+
+```
 include("manim.jl")
 using .manim
 C1 = Circle(ORIGIN, 30.0)
@@ -30,3 +36,7 @@ Play(
 Play(Wait(3))
 #Save it and show video(requires mpv)
 Render(show = true)
+```
+gives the following 
+![](assets/circlesnlines.gif)
+

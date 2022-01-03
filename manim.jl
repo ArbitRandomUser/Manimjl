@@ -44,10 +44,10 @@ vidwriter = nothing
 videoname = "test.mp4"
 
 #vidwriter = open_video_out("test.mp4",RGB{N0f8},reverse(res),framerate=framerate) 
-function Video(videoname="test.mp4",res=(640,480),framerate=30)
- global res = res 
- global framerate = framerate 
- global videoname = videoname
+function Video(fvideoname="test.mp4",fres=(640,480),fframerate=30)
+ global res = fres 
+ global framerate = fframerate 
+ global videoname = fvideoname
  global vidwriter = open_video_out(videoname,RGB{N0f8},reverse(res),framerate=framerate) 
 end
 
@@ -67,7 +67,7 @@ include("animations.jl")
 function drawframe()
   """
     go to every object in Scene, apply its respective transform,
-    draw ! , return drawing as frame(Matrix{. 
+    draw ! , return drawing as frame(Matrix{RGB{N0f8}}). 
   """
   Drawing(res..., :image)
   origin()
