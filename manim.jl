@@ -21,7 +21,8 @@ export Arc,
   Wait,
   UniformGrid,
   ClearScene,
-  Video
+  Video,
+  remove!
 
 #export easing functions from Luxor
 pre  = ["ease"]
