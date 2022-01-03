@@ -14,7 +14,7 @@ Play(CreateObject(C3, 3))
 
 #draw a line , linearly
 push!(Scene,L1)
-Play(CreateObject(L1, 3, easefn = easingflat))
+Play(CreateObject(L1, 1, easefn = easingflat))
 
 #fade in circle1 in 1 second
 push!(Scene,C1,C2)
@@ -23,10 +23,14 @@ Play(FadeInObject(C1, 1))
 #draw circle2 while fading it in,
 #in 3 and 5 seconds respectively
 Play(
-     CreateObject(C2, 3), 
+     CreateObject(C2, 5), 
      FadeInObject(C2, 5),
 )
 #do nothing for 3 seconds
-Play(Wait(3))
+Play(Wait(1))
+Play(
+     UncreateObject(C2,5),
+     FadeOutObject(C2,5),
+    )
 #Save it and show video(requires mpv)
 Render(show = true)
