@@ -1,5 +1,5 @@
-Manimish libarary<br/>  
-Noobish at best,<br/> 
+Manimish<br/>
+Noobish<br/>
 Very barebones for now<br/> 
 Questionable programming decisions<br/>   
 Javis.jl is probably what you really want<br/>  
