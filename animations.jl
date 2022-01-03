@@ -3,13 +3,14 @@ function FadeInObject(o::Object, T = 1)
   interpol(t) = t
   #TODO dont do this , return an iterator instead
   ret = []
+  Iterators.map( t -> ()->(o.opacity = interpol(t))  , range(0,T,length=nframes) ) 
   for (i, t) in enumerate(range(0, T, length = nframes))
     push!(ret, () -> (o.opacity = interpol(t)))
   end
   ret
 end
 
-function CreateObject(o::Object, T::Real = 1; easefn = easingflat)
+function CreateObject(o::Object, T::Real = 1; easefn = easeinoutcubic)
   nframes = floor(T * framerate)
   ret = []
   #TODO dont do this , return an iterator instead
@@ -30,6 +31,9 @@ function Wait(T::Real = 1.0;)
 end
 
 function Play(actions...)
+  # actions is a list like 
+  # [ [f1,f2,f3..]  , [g1,g2,g3...],... ]
+  # where fi,gi are all functions 
   nframes = maximum(length.(actions))
   i = 1
   while (i <= nframes)
@@ -38,7 +42,8 @@ function Play(actions...)
         action[i]()
       end
     end
-    push!(frames, drawframe())
+    write(vidwriter,drawframe() )
+    #push!(frames, drawframe())
     i = i + 1
   end
 end

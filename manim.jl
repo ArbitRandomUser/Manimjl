@@ -1,6 +1,7 @@
 module manim
 
 export Arc,
+  Object,
   Circle,
   Line,
   FadeInObject,
@@ -13,7 +14,10 @@ export Arc,
   UP,
   LEFT,
   RIGHT,
-  Wait
+  Wait,
+  UniformGrid,
+  ClearScene,
+  Video
 
 #export easing functions from Luxor
 pre  = ["ease"]
@@ -26,15 +30,29 @@ for i in pre
     end
   end
 end
+export easingflat
 
+import Base
 using Luxor
+using OrderedCollections
 using LinearAlgebra
 using FileIO, ImageMagick, Colors, FixedPointNumbers, VideoIO
-#TODO dont hold all frames in Array, use a VideoIO writer
-frames = Array{Matrix{RGB{N0f8}}}([])
-res = [640, 480]
-const framerate = 30
+
+res = (640,480)
+framerate = 30 
+vidwriter = nothing
+videoname = "test.mp4"
+
+#vidwriter = open_video_out("test.mp4",RGB{N0f8},reverse(res),framerate=framerate) 
+function Video(videoname="test.mp4",res=(640,480),framerate=30)
+ global res = res 
+ global framerate = framerate 
+ global videoname = videoname
+ global vidwriter = open_video_out(videoname,RGB{N0f8},reverse(res),framerate=framerate) 
+end
+
 Luxor.Point(x::Array) = Luxor.Point(Tuple(x[1:2]))
+
 abstract type Object end
 
 mutable struct ObjectGroup
@@ -42,27 +60,70 @@ mutable struct ObjectGroup
 end
 
 
-
 include("constants.jl")
 include("objects.jl")
 include("animations.jl")
 
 function drawframe()
-  img = Drawing(res..., :image)
+  """
+    go to every object in Scene, apply its respective transform,
+    draw ! , return drawing as frame(Matrix{. 
+  """
+  Drawing(res..., :image)
   origin()
   sethue("white")
   for o in Scene
     drawobject(o.transform(o))
   end
-  return image_as_matrix()
+  img =  image_as_matrix()
   finish()
+  return Matrix{RGB{N0f8}}(img)
 end
 
+"""This is the scene , an array of Objects
+drawframe uses this to draw onto the screen
+"""
 Scene = Array{Object}([])
 
-function Render()
-  save("test.mp4", frames, framerate = 30)
-  run(`mpv test.mp4`)
+function remove!(obj,scene::Array{Object}=Scene)
+  """
+  remove object from scene
+  """
+  for (i,o) in enumerate(scene)
+    if o==obj
+      deleteat!(scene,i)
+    end
+  end
+end
+
+function ClearScene(scene::Array{Object}=Scene)
+  """
+  clears the scene of all objects
+  """
+  while(length(scene)!=0)
+    pop!(scene)
+  end
+end
+
+function Render(;show=false,player="mpv")
+  """
+  writes the video to file and closes file.
+  if show is true , will play the video with mpv.
+  Note that Render does not clear the Scene, new Video's made
+  after Render will still contain Objects that were added;
+  use ClearScene after Render to clear the Scene.
+  """
+  #save("test.mp4", frames, framerate = 30)
+  close_video_out!(vidwriter)
+  if show==true
+    try
+      run(`$(player) $(videoname)`)
+    catch e
+      if e isa IOError
+        println(e.msg, " try passing a different player")
+      end
+    end
+  end
 end
 
 end #close module manim
