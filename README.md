@@ -1,7 +1,12 @@
-Manimish libarary for math animations 
+Manimish libarary.  
+Noobish at best,
+Very barebones for now
+Questionable programming decisions  
 Javis.jl is probably what you really want 
+but if you insist on "declarative" animations
+this might kinda help.
 
-minimal example
+Minimal example
 
 ```julia
 include("manim.jl")
@@ -37,7 +42,7 @@ Play(Wait(3))
 #Save it and show video(requires mpv)
 Render(show = true)
 ```
-gives the following<br/>
+Gives the following...<br/>
 
 ![](assets/circlesnlines.gif)
 
