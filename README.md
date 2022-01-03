@@ -3,7 +3,7 @@ Javis.jl is probably what you really want
 
 minimal example
 
-```
+```julia
 include("manim.jl")
 using .manim
 C1 = Circle(ORIGIN, 30.0)
@@ -37,6 +37,7 @@ Play(Wait(3))
 #Save it and show video(requires mpv)
 Render(show = true)
 ```
-gives the following 
+gives the following<br/>
+
 ![](assets/circlesnlines.gif)
 
