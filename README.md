@@ -21,23 +21,25 @@ L1 = Line(ORIGIN, C2.centre, 1.0) #visbile line(opacity=1.0) from origin to C2's
 Video("circlesnlines.mp4")
 #add circle C3 to scene
 push!(Scene,C3)
-#Draw C3 and show its creation,
-#by default , CreateObject uses cubic-in-out easing function 
+#"Draw" C3 and show its creation,
+#by default , CreateObject uses cubic-in-out easing function
 Play(CreateObject(C3, 3))
 
-#draw a line , with a linear easingfunction
+#"Draw" a line , with a linear easingfunction
 push!(Scene,L1)
 Play(CreateObject(L1, 3, easefn = easingflat))
 
 #add C1 and C2 to Scene
 push!(Scene,C1,C2)
-#by default if 3rd parameter is not specified
-#opacity of the object is 0 , fadin animates the opacity from 0->1
-#here we fade in C1 in 1 second
+#fadin animates the opacity from 0->1
+#C1 and C2 were created with opacity 0 (default)
+#Here we fade in C1 in 1 second
 Play(FadeInObject(C1, 1))
 
-#play 2 animations simultaneuosly ...
-#draw circle2 while fading it in,
+#Play 2 animations simultaneuosly!
+#Play() can be passed multiple arguments
+#which will all be animated simultaneosly
+#"Draw" C2 while fading it in,
 #in 3 and 5 seconds respectively
 Play(
      CreateObject(C2, 3), 
