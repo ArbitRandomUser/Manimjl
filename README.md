@@ -1,10 +1,10 @@
 Manimish<br/>
 Noobish<br/>
-Very barebones for now<br/> 
-Questionable programming decisions<br/>   
-Javis.jl is probably what you really want<br/>  
-but if you insist on "declarative" animations<br/> 
-this might kinda help.<br/> 
+Very barebones for now<br/>
+Questionable programming decisions<br/>
+Javis.jl is probably what you really want<br/>
+but if you insist on "declarative" animations<br/>
+this might kinda help.<br/>
 
 Minimal example
 
