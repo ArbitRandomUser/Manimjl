@@ -47,14 +47,6 @@ function drawpartial(l::Line, frac::Real)
   return Line(l.beginp, endp, l.opacity)
 end
 
-function UniformGrid(spacing=10.0)
-  ret = Array{Object}[]
-  for i in 1:10
-      push!(ret,Line(-res))
-  end
-
-end
-
 function UniformGrid(spacing=10.0,vis=0.0)
   ret = Array{Object}([])
   left_edge = (ORIGIN .- [manim.res[1],0,0]./2)[1]
@@ -78,7 +70,3 @@ function UniformGrid(spacing=10.0,vis=0.0)
   end
   return ret
 end
-##REPL test
-#include("manim.jl")
-#using .manim
-#ret = Array{Object}[]
