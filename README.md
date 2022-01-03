@@ -11,25 +11,31 @@ Minimal example
 ```julia
 include("manim.jl")
 using .manim
-C1 = Circle(ORIGIN, 30.0)
-C2 = Circle(ORIGIN .+ 80 * UP, 30.0,)
-L1 = Line(ORIGIN, C2.centre, 1.0)
-C3 = Circle((C1.centre + C2.centre) / 2.0, 100.0, 1.0)
+C1 = Circle(ORIGIN, 30.0) #invisble circle centre at origin , radius 30 (default opacity is 0)
+C2 = Circle(ORIGIN .+ 80 * UP, 30.0) #invisible circle radius 30 , slightly higher up
+C3 = Circle((C1.centre + C2.centre) / 2.0, 100.0, 1.0)#radius 100, visible circle whos centre is 
+#midpoint of C1 and C2's centre 
+L1 = Line(ORIGIN, C2.centre, 1.0) #visbile line(opacity=1.0) from origin to C2's centre
 
 #setup video
 Video("circlesnlines.mp4")
 #add circle C3 to scene
 push!(Scene,C3)
-#Draw C3, default is to use an easing function 
+#Draw C3 and show its creation,
+#by default , CreateObject uses cubic-in-out easing function 
 Play(CreateObject(C3, 3))
 
-#draw a line , linearly
+#draw a line , with a linear easingfunction
 push!(Scene,L1)
 Play(CreateObject(L1, 3, easefn = easingflat))
 
-#fade in circle1 in 1 second
+#add C1 and C2 to Scene
 push!(Scene,C1,C2)
+#by default if 3rd parameter is not specified
+#opacity of the object is 0 , fadin animates the opacity from 0->1
+#here we fade in C1 in 1 second
 Play(FadeInObject(C1, 1))
+
 #play 2 animations simultaneuosly ...
 #draw circle2 while fading it in,
 #in 3 and 5 seconds respectively
