@@ -27,7 +27,7 @@ Play(CreateObject(C3, 3))
 
 #"Draw" a line , with a linear easingfunction
 push!(Scene,L1)
-Play(CreateObject(L1, 3, easefn = easingflat))
+Play(CreateObject(L1, 1, easefn = easingflat))
 
 #add C1 and C2 to Scene
 push!(Scene,C1,C2)
@@ -43,10 +43,19 @@ Play(FadeInObject(C1, 1))
 #in 3 and 5 seconds respectively
 Play(
      CreateObject(C2, 3), 
-     FadeInObject(C2, 5),
+     FadeInObject(C2, 2),
 )
 #do nothing for 3 seconds
-Play(Wait(3))
+Play(Wait(1))
+
+#UNDO everything!
+Play(
+     UncreateObject(C2, 3), 
+     FadeOutObject(C2, 2),
+)
+Play(FadeOutObject(C1, 1))
+Play(UncreateObject(L1, 1, easefn = easingflat))
+Play(UncreateObject(C3, 3))
 #Save it and show video(requires mpv)
 Render(show = true)
 ```
