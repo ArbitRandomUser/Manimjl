@@ -29,12 +29,12 @@ Play(FadeInObject(C1, 1))
 #Play() can be passed multiple arguments
 #which will all be animated simultaneosly
 #"Draw" C2 while fading it in,
-#in 3 and 5 seconds respectively
+#in 3 and 2 seconds respectively
 Play(
      CreateObject(C2, 3), 
      FadeInObject(C2, 2),
 )
-#do nothing for 3 seconds
+#do nothing for 1 seconds
 Play(Wait(1))
 
 #UNDO everything!
