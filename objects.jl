@@ -1,3 +1,7 @@
+function lineartransformpartial(o::object,frac::Real,m::matrix)
+   
+end
+
 #Arc and Circle
 mutable struct Arc <: Object
   centre::Array
@@ -20,10 +24,15 @@ function drawobject(o::Arc)
   Luxor.arc(o.centre[1], o.centre[2], o.radius, o.angle1, o.angle2, :stroke)
   setopacity(0)
 end
+
 function drawpartial(a::Arc, frac::Real)
   angle2 = a.angle1 + frac * a.angle2
+  #setopacity(a.opacity)
+  #Luxor.arc(a.centre[1],a.centre[2], a.radius, a.angle1, angle2,:stroke)
+  #setopacity(0)
   return Arc(a.centre, a.radius, a.angle1, angle2, a.opacity)
 end
+
 
 #Line
 mutable struct Line <: Object
