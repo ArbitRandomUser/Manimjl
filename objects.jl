@@ -1,5 +1,5 @@
-function lineartransformpartial(o::object,frac::Real,m::matrix)
-   
+function lineartransformpartial(o::Object,frac::Real,m::Matrix)
+
 end
 
 #Arc and Circle
@@ -9,17 +9,20 @@ mutable struct Arc <: Object
   angle1::Real
   angle2::Real
   opacity::Real
-  transform::Function
+  transform::Function #transforms in manim, f:Object -> Object
+  ltransform::Tuple{Function,Function} #transform,and its inverse in luxor f:void->void
   misc::Dict
 end
+
+nulltrnsfrm = ()->()
 #constructors
-Arc(o::Array, r::Real, a1::Real, a2::Real) = Arc(o, r, a1, a2, 0, x -> x, Dict([]))
+Arc(o::Array, r::Real, a1::Real, a2::Real) = Arc(o, r, a1, a2, 0, x -> x,(nulltrnsfrm,nulltrnsfrm), Dict([]))
 Arc(o::Array, r::Real, a1::Real, a2::Real, op::Real) =
-  Arc(o, r, a1, a2, op, x -> x, Dict([]))
+Arc(o, r, a1, a2, op, x -> x,(nulltrnsfrm,nulltrnsfrm), Dict([]))
 Circle(o::Array, r::Real) = Arc(o, r, 0, 2π)
 Circle(o::Array, r::Real, op::Real) = Arc(o, r, 0, 2π, op)
 
-function drawobject(o::Arc)
+function drawobject(o::Arc)#m::Matrix=I)
   setopacity(o.opacity)
   Luxor.arc(o.centre[1], o.centre[2], o.radius, o.angle1, o.angle2, :stroke)
   setopacity(0)
@@ -40,11 +43,12 @@ mutable struct Line <: Object
   endp::Array
   opacity::Real
   transform::Function
+  ltransform::Tuple{Function,Function}
   misc::Dict
 end
 #constructors
-Line(b::Array, e::Array) = Line(b, e, 0.0, x -> x, Dict([]))
-Line(b::Array, e::Array, op::Real) = Line(b, e, op, x -> x, Dict([]))
+Line(b::Array, e::Array) = Line(b, e, 0.0, x -> x,(nulltrnsfrm,nulltrnsfrm), Dict([]))
+Line(b::Array, e::Array, op::Real) = Line(b, e, op, x -> x,(nulltrnsfrm,nulltrnsfrm), Dict([]))
 
 function drawobject(o::Line; part = 1.0)
   setopacity(o.opacity)

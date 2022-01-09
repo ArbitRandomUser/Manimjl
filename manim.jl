@@ -39,7 +39,7 @@ export easingflat
 
 import Base
 using Luxor
-using OrderedCollections
+#using OrderedCollections
 using LinearAlgebra
 using FileIO, ImageMagick, Colors, FixedPointNumbers, VideoIO
 
@@ -78,7 +78,10 @@ function drawframe()
   origin()
   sethue("white")
   for o in Scene
+    #new_o = deepcopy(o) 
+    o.ltransform[1]()
     drawobject(o.transform(o))
+    o.ltransform[2]() #invert
   end
   img =  image_as_matrix()
   finish()
