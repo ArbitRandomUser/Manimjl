@@ -22,26 +22,27 @@ function UncreateObjectPartial(o::Object,p::Real, T::Real = 1; easefn = easeinou
   ret
 end
 
-function LinearTransformPartial(o::Object,T::Real=1.0,m::Matrix=Matrix(I,(2,2));  easefn = easingflat)
+function LinearTransform(o::Object,T::Real=1.0,m::Matrix=manim.Idenaffine;  easefn = easingflat)
   nframes = floor(Int,T*framerate)
-  cur_ltransform = o.ltransform
+  cur_ltransform = deepcopy(o.ltransform)
   function f(o::Object,p::Real)
     mp = p*m + (1-p)*I 
-    o.ltransform = () ->( cur_ltransform(), transform([mp [0,0]]) )
+    o.ltransform =   transform([mp*cur_ltransform[:,1:2] cur_ltransform[:,3]+mp[:,3] ]) 
     #o.ltransform[2] = () ->( setmatrix([1.0,0,0,1.0,0,0]))
   end
   ret = (() ->  f(o,easefn(t,0,1,T)) for t in range(0,T,length=nframes) )
+  ret
 end
 
-function Rotate(o::Object,p::Real,T::Real=1.0;  easefn = easingflat)
-  @assert 0<=p<=1
+function Rotate(o::Object,θ::Real,T::Real=1.0;  easefn = easingflat)
   nframes = floor(Int,T*framerate)
-  cur_ltransform = o.ltransform
-  function f(o::Object,frac::Real)
-    o.ltransform = () ->( cur_ltransform(), rotate(frac) )
+  cur_ltransform = deepcopy(o.ltransform)
+  function f(o::Object,fθ::Real)
+    o.ltransform =  rotationmatrix(fθ)[1:2,1:2]*cur_ltransform[1:2,1:2]  
     #o.ltransform[2] = () ->( setmatrix([1.0,0,0,1.0,0,0]))
   end
-  ret = (() ->  f(o,easefn(t,0,p,T)) for t in range(0,T,length=nframes) )
+  ret = (() ->  f(o,easefn(t,0,θ,T)) for t in range(0,T,length=nframes) )
+  ret
 end
 
 function FadeInObject(o::Object, T = 1)

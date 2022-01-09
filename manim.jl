@@ -22,7 +22,7 @@ export Arc,
   UniformGrid,
   ClearScene,
   Video,
-  LinearTransformPartial,
+  LinearTransform,
   Rotate,
   remove!
 
@@ -81,7 +81,7 @@ function drawframe()
   sethue("white")
   for o in Scene
     #new_o = deepcopy(o) 
-    o.ltransform()
+    setmatrix(o.ltransform)
     drawobject(o.transform(o))
     setmatrix([1.0,0,0,1.0,0,0]) #reset the transform
     origin()
