@@ -1,5 +1,7 @@
-function lineartransformpartial(o::Object,frac::Real,m::Matrix)
-
+function lineartransformpartial(o::Object,m::Matrix)
+  cur_ltransform = o.ltransform
+  #o.ltransform[1] = () ->( cur_ltransform[1](), transform([m [o.centre]]) )
+  #o.ltransform[2] = () ->( cur_ltransform[2](), transform([m^-1 -1.0*[o.centre]]))
 end
 
 #Arc and Circle
@@ -10,15 +12,15 @@ mutable struct Arc <: Object
   angle2::Real
   opacity::Real
   transform::Function #transforms in manim, f:Object -> Object
-  ltransform::Tuple{Function,Function} #transform,and its inverse in luxor f:void->void
+  ltransform::Function # 2 element array ,transform,and its inverse in luxor f:void->void
   misc::Dict
 end
 
-nulltrnsfrm = ()->()
+#nulltrnsfrm = ()->()
 #constructors
-Arc(o::Array, r::Real, a1::Real, a2::Real) = Arc(o, r, a1, a2, 0, x -> x,(nulltrnsfrm,nulltrnsfrm), Dict([]))
+Arc(o::Array, r::Real, a1::Real, a2::Real) = Arc(o, r, a1, a2, 0, x->x,()->(), Dict([]))
 Arc(o::Array, r::Real, a1::Real, a2::Real, op::Real) =
-Arc(o, r, a1, a2, op, x -> x,(nulltrnsfrm,nulltrnsfrm), Dict([]))
+Arc(o, r, a1, a2, op, x->x, ()->(), Dict([]))
 Circle(o::Array, r::Real) = Arc(o, r, 0, 2π)
 Circle(o::Array, r::Real, op::Real) = Arc(o, r, 0, 2π, op)
 
@@ -43,12 +45,12 @@ mutable struct Line <: Object
   endp::Array
   opacity::Real
   transform::Function
-  ltransform::Tuple{Function,Function}
+  ltransform::Function
   misc::Dict
 end
 #constructors
-Line(b::Array, e::Array) = Line(b, e, 0.0, x -> x,(nulltrnsfrm,nulltrnsfrm), Dict([]))
-Line(b::Array, e::Array, op::Real) = Line(b, e, op, x -> x,(nulltrnsfrm,nulltrnsfrm), Dict([]))
+Line(b::Array, e::Array) = Line(b, e, 0.0, x -> x,()->(), Dict([]))
+Line(b::Array, e::Array, op::Real) = Line(b, e, op, x -> x,()->(), Dict([]))
 
 function drawobject(o::Line; part = 1.0)
   setopacity(o.opacity)

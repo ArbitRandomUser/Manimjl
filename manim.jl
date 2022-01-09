@@ -22,6 +22,8 @@ export Arc,
   UniformGrid,
   ClearScene,
   Video,
+  LinearTransformPartial,
+  Rotate,
   remove!
 
 #export easing functions from Luxor
@@ -79,9 +81,10 @@ function drawframe()
   sethue("white")
   for o in Scene
     #new_o = deepcopy(o) 
-    o.ltransform[1]()
+    o.ltransform()
     drawobject(o.transform(o))
-    o.ltransform[2]() #invert
+    setmatrix([1.0,0,0,1.0,0,0]) #reset the transform
+    origin()
   end
   img =  image_as_matrix()
   finish()

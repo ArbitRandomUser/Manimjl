@@ -22,6 +22,28 @@ function UncreateObjectPartial(o::Object,p::Real, T::Real = 1; easefn = easeinou
   ret
 end
 
+function LinearTransformPartial(o::Object,T::Real=1.0,m::Matrix=Matrix(I,(2,2));  easefn = easingflat)
+  nframes = floor(Int,T*framerate)
+  cur_ltransform = o.ltransform
+  function f(o::Object,p::Real)
+    mp = p*m + (1-p)*I 
+    o.ltransform = () ->( cur_ltransform(), transform([mp [0,0]]) )
+    #o.ltransform[2] = () ->( setmatrix([1.0,0,0,1.0,0,0]))
+  end
+  ret = (() ->  f(o,easefn(t,0,1,T)) for t in range(0,T,length=nframes) )
+end
+
+function Rotate(o::Object,p::Real,T::Real=1.0;  easefn = easingflat)
+  @assert 0<=p<=1
+  nframes = floor(Int,T*framerate)
+  cur_ltransform = o.ltransform
+  function f(o::Object,frac::Real)
+    o.ltransform = () ->( cur_ltransform(), rotate(frac) )
+    #o.ltransform[2] = () ->( setmatrix([1.0,0,0,1.0,0,0]))
+  end
+  ret = (() ->  f(o,easefn(t,0,p,T)) for t in range(0,T,length=nframes) )
+end
+
 function FadeInObject(o::Object, T = 1)
   SetOpacity(o,1.0,T)
 end
