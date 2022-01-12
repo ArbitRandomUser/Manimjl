@@ -9,25 +9,30 @@ function CreateObjectPartial(o::Object,p::Real, T::Real = 1; easefn = easeinoutc
   #draws p fraction of the object
   @assert 0<=p<=1
   nframes = floor(T * framerate)
-  curr_transform = o.transform
-  ret= ( () -> o.transform = x -> drawpartial(curr_transform(x), easefn(t, 0, p, T)) for t in range(0,T,length=nframes) )
+  t_index = length(o.transforms)
+  push!(o.transforms, x->x ) #push a new transform
+  ret= ( () -> o.transforms[t_index+1] = x -> drawpartial(x, easefn(t, 0, p, T)) for t in range(0,T,length=nframes) )
   ret
 end
 function UncreateObjectPartial(o::Object,p::Real, T::Real = 1; easefn = easeinoutcubic)
   #undraws p fraction of the object
   @assert 0<=p<=1
   nframes = floor(T * framerate)
-  curr_transform = o.transform
-  ret= ( () -> o.transform = x -> drawpartial(curr_transform(x), easefn(t, 1, -p, T)) for t in range(0,T,length=nframes))
+  t_index = length(o.transforms)
+  push!(o.transforms, x->x) #push a new transform
+  ret= ( () -> o.transforms[t_index+1] = x -> drawpartial(x, easefn(t, 1, -p, T)) for t in range(0,T,length=nframes))
   ret
 end
 
-function LinearTransform(o::Object,T::Real=1.0,m::Matrix=manim.Idenaffine;  easefn = easingflat)
+function LinearTransform(o::Object,T::Real=1.0,m::Matrix=Matrix(I,(3,3));  easefn = easingflat)
   nframes = floor(Int,T*framerate)
-  cur_ltransform = deepcopy(o.ltransform)
+  #cur_ltransform = deepcopy(o.ltransform)
+  t_index = length(o.ltransforms)
+  push!(o.ltransforms, Matrix(I,(3,3)) ) #push a new transform
   function f(o::Object,p::Real)
-    mp = p*m + (1-p)*I 
-    o.ltransform =   transform([mp*cur_ltransform[:,1:2] cur_ltransform[:,3]+mp[:,3] ]) 
+    mp = p*m + (1-p)*I
+    #o.ltransform =   mp*cur_ltransform[:,1:2] cur_ltransform[:,3]+mp[:,3] 
+    o.ltransforms[t_index+1] = mp#*cur_ltransform  
     #o.ltransform[2] = () ->( setmatrix([1.0,0,0,1.0,0,0]))
   end
   ret = (() ->  f(o,easefn(t,0,1,T)) for t in range(0,T,length=nframes) )
@@ -36,9 +41,11 @@ end
 
 function Rotate(o::Object,θ::Real,T::Real=1.0;  easefn = easingflat)
   nframes = floor(Int,T*framerate)
-  cur_ltransform = deepcopy(o.ltransform)
+  #cur_ltransform = deepcopy(o.ltransform)
+  t_index = length(o.ltransforms)
+  push!(o.ltransforms, Matrix(I,(3,3)) ) #push a new transform
   function f(o::Object,fθ::Real)
-    o.ltransform =  rotationmatrix(fθ)[1:2,1:2]*cur_ltransform[1:2,1:2]  
+    o.ltransforms[t_index+1] =  rotationmatrix(fθ) #*cur_ltransform  
     #o.ltransform[2] = () ->( setmatrix([1.0,0,0,1.0,0,0]))
   end
   ret = (() ->  f(o,easefn(t,0,θ,T)) for t in range(0,T,length=nframes) )

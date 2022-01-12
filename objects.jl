@@ -1,23 +1,23 @@
 
 #Arc and Circle
-Iden = Matrix(I,(2,2))
-Idenaffine = [Iden [0,0]]
+Iden = Matrix{Real}(I,(2,2))
+Iden3 = Matrix{Real}(I,(3,3)) 
 mutable struct Arc <: Object
   centre::Array
   radius::Real
   angle1::Real
   angle2::Real
   opacity::Real
-  transform::Function #transforms in manim, f:Object -> Object
-  ltransform::Matrix # 2 element array ,transform,and its inverse in luxor f:void->void
+  transforms::Array{Function} #transforms in manim, f:Object -> Object
+  ltransforms::Array{Matrix} # 2 element array ,transform,and its inverse in luxor f:void->void
   misc::Dict
 end
 
 #nulltrnsfrm = ()->()
 #constructors
-Arc(o::Array, r::Real, a1::Real, a2::Real) = Arc(o, r, a1, a2, 0, x->x,Idenaffine, Dict([]))
+Arc(o::Array, r::Real, a1::Real, a2::Real) = Arc(o, r, a1, a2, 0, [] , [], Dict([]))
 Arc(o::Array, r::Real, a1::Real, a2::Real, op::Real) =
-Arc(o, r, a1, a2, op, x->x, Idenaffine, Dict([]))
+Arc(o, r, a1, a2, op, [] , [], Dict([]))
 Circle(o::Array, r::Real) = Arc(o, r, 0, 2π)
 Circle(o::Array, r::Real, op::Real) = Arc(o, r, 0, 2π, op)
 
@@ -41,13 +41,13 @@ mutable struct Line <: Object
   beginp::Array
   endp::Array
   opacity::Real
-  transform::Function
-  ltransform::Matrix
+  transforms::Array{Function}
+  ltransforms::Array{Matrix}
   misc::Dict
 end
 #constructors
-Line(b::Array, e::Array) = Line(b, e, 0.0, x -> x,Idenaffine, Dict([]))
-Line(b::Array, e::Array, op::Real) = Line(b, e, op, x -> x,Idenaffine, Dict([]))
+Line(b::Array, e::Array) = Line(b, e, 0.0, [] , [] , Dict([]))
+Line(b::Array, e::Array, op::Real) = Line(b, e, op, [], [] , Dict([]))
 
 function drawobject(o::Line; part = 1.0)
   setopacity(o.opacity)

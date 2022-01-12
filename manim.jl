@@ -56,6 +56,7 @@ function Video(fvideoname="test.mp4",fres=(640,480),fframerate=30)
  global framerate = fframerate 
  global videoname = fvideoname
  global vidwriter = open_video_out(videoname,RGB{N0f8},reverse(res),framerate=framerate) 
+ #global ORIGIN = [res[1]/2, res[2]/2, 0]
 end
 
 Luxor.Point(x::Array) = Luxor.Point(Tuple(x[1:2]))
@@ -78,13 +79,25 @@ function drawframe()
   """
   Drawing(res..., :image)
   origin()
+  originmatrix = getmatrix()
+  shiftcolumn = getmatrix()[5:6]
+  #shiftmatrix = hcat(reshape(shiftmatrix[1:4],(2,2)), shiftmatrix[5:6])
   sethue("white")
   for o in Scene
     #new_o = deepcopy(o) 
-    setmatrix(o.ltransform)
-    drawobject(o.transform(o))
-    setmatrix([1.0,0,0,1.0,0,0]) #reset the transform
-    origin()
+    #setmatrix(o.ltransform[1:2,:])
+    m1 = Matrix{Real}(I,(3,3))
+    for m in reverse(o.ltransforms)
+      m1 .= m*m1 
+    end
+    new_o = o
+    for t in o.transforms
+      new_o = t(new_o)
+    end
+    m1[1:2,3] .= shiftcolumn
+    setmatrix(m1[1:2,:])
+    drawobject(new_o)
+    setmatrix(originmatrix) #reset the transform
   end
   img =  image_as_matrix()
   finish()
