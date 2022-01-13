@@ -2,15 +2,15 @@ module manim
 
 export Arc,
   Object,
-  Circle,
-  Line,
-  FadeInObject,
+  Circle, #function to create circle
+  Line, #line object
+  FadeInObject,# fadein 
   FadeOutObject,
   CreateObjectPartial,
   CreateObject,
   UncreateObjectPartial,
   UncreateObject,
-  Scene,
+  Scene, #Scene 
   Render,
   ORIGIN,
   Play,
@@ -24,6 +24,7 @@ export Arc,
   Video,
   LinearTransform,
   Rotate,
+  Seq,
   remove!
 
 #export easing functions from Luxor
@@ -141,7 +142,7 @@ function calcindex(i,ls)
   return idx, idx==1 ? i : i - sums[idx-1]
 end
 
-function seq(arr...)
+function Seq(arr...)
   """takes arbitrary number generators as argument , makes a generator that is
   a "concatenated" generator of the arguments"""
   ls = length.(arr)
