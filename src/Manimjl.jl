@@ -28,6 +28,7 @@ export Arc,
   remove!
 
 #export easing functions from Luxor
+println("greet")
 pre  = ["ease"]
 mid  = ["in","out","inout"]
 post = ["expo","circ","quad","cubic","quart","quint"]
