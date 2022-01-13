@@ -29,7 +29,7 @@ export Arc,
   remove!
 
 function hell()
-  println("hell")
+  println("hell2")
 end
 #export easing functions from Luxor
 pre  = ["ease"]
