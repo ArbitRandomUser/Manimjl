@@ -129,6 +129,28 @@ function ClearScene(scene::Array{Object}=Scene)
   end
 end
 
+function calcindex(i,ls)
+  "given an integer i , and a list of lengths `ls`
+  asusming `ls` are the lengths of different arrays
+  this function returns which array `i` will fall 
+  into and at what position"
+  sums = cumsum(ls)
+  #println(sums)
+  idx = findfirst( >=(i),sums)
+  #println(idx ," ", idx==1 ? i : i-sums[idx-1], " ",i ) 
+  return idx, idx==1 ? i : i - sums[idx-1]
+end
+
+function seq(arr...)
+  """takes arbitrary number generators as argument , makes a generator that is
+  a "concatenated" generator of the arguments"""
+  ls = length.(arr)
+  fn = calcindex
+  ( arr[fn(i,ls)[1]].f(
+                         arr[fn(i,ls)[1]].iter[fn(i,ls)[2]])
+   for  i in 1:sum(ls) )
+end
+
 function Render(;show=false,player="mpv")
   """
   writes the video to file and closes file.
