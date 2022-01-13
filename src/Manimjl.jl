@@ -1,4 +1,4 @@
-module manim
+module Manimjl 
 
 export Arc,
   Object,
