@@ -25,12 +25,8 @@ export Arc,
   LinearTransform,
   Rotate,
   Seq,
-  hell,
   remove!
 
-function hell()
-  println("hell2")
-end
 #export easing functions from Luxor
 pre  = ["ease"]
 mid  = ["in","out","inout"]
