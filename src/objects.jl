@@ -87,9 +87,11 @@ function drawpartial(o::pngplot,frac::Real)
   #setopacity(o.opacity)
   savefig(plotpartial(o.x,o.y,p=frac,sz=o.size),"/tmp/manimjltemp.png")
   img = readpng("/tmp/manimjltemp.png")
-  retplot = deepcopy(o)
-  retplot.pngimage = img
+  #retplot = o
+  #retplot.pngimage = img
+  o.pngimage = img
   return retplot 
+  return o
 end
 
 function UniformGrid(spacing=10.0,vis=0.0)

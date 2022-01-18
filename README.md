@@ -6,11 +6,17 @@ Javis.jl is probably what you really want<br/>
 but if you insist on "declarative" animations<br/>
 this might kinda help.<br/>
 
+Not regsitered with General Registry yet,
+To install run ...
+```
+pkg> add https://github.com/ArbitRandomUser/Manimjl
+```
+
 Minimal example
 
 ```julia
-include("manim.jl")
-using .manim
+using Manimjl
+
 C1 = Circle(ORIGIN, 30.0) #invisble circle centre at origin , radius 30 (default opacity is 0)
 C2 = Circle(ORIGIN .+ 80 * UP, 30.0) #invisible circle radius 30 , slightly higher up
 C3 = Circle((C1.centre + C2.centre) / 2.0, 100.0, 1.0)#radius 100, visible circle whos centre is 
