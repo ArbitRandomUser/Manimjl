@@ -25,6 +25,7 @@ export Arc,
   LinearTransform,
   Rotate,
   Seq,
+  pngplot,
   remove!
 
 #export easing functions from Luxor
@@ -44,6 +45,7 @@ import Base
 using Luxor
 #using OrderedCollections
 using LinearAlgebra
+using Plots
 using FileIO, ImageMagick, Colors, FixedPointNumbers, VideoIO
 
 res = (640,480)
@@ -72,6 +74,7 @@ end
 include("constants.jl")
 include("objects.jl")
 include("animations.jl")
+include("animplots.jl")
 
 function drawframe()
   """

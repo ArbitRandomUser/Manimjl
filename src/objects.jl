@@ -59,6 +59,39 @@ function drawpartial(l::Line, frac::Real)
   return Line(l.beginp, endp, l.opacity)
 end
 
+abstract type png <: Object
+end
+
+mutable struct pngplot<:png
+  x::Array
+  y::Array
+  size::Tuple
+  opacity::Real
+  pngimage
+  transforms::Array{Function}
+  ltransforms::Array{Matrix}
+end
+
+function pngplot(x,y)
+  savefig(plot(x,y),"/tmp/manimjltemp.png")
+  img = readpng("/tmp/manimjltemp.png")
+  pngplot(x,y,(640,480),1.0,img,[],[])
+end
+
+function drawobject(o::pngplot)
+  placeimage(o.pngimage,Point(0,0),o.opacity,centered=true)
+  setopacity(0)
+end
+
+function drawpartial(o::pngplot,frac::Real)
+  #setopacity(o.opacity)
+  savefig(plotpartial(o.x,o.y,p=frac,sz=o.size),"/tmp/manimjltemp.png")
+  img = readpng("/tmp/manimjltemp.png")
+  retplot = deepcopy(o)
+  retplot.pngimage = img
+  return retplot 
+end
+
 function UniformGrid(spacing=10.0,vis=0.0)
   ret = Array{Object}([])
   left_edge = (ORIGIN .- [manim.res[1],0,0]./2)[1]

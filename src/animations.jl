@@ -13,7 +13,7 @@ function CreateObjectPartial(o::Object,p::Real, T::Real = 1; easefn = easeinoutc
   `T` is the Time taken to create the object
   """
   @assert 0<=p<=1
-  if o not in Scene
+  if !(o  in Scene)
     push!(Scene,o)
   end
   nframes = floor(T * framerate)
