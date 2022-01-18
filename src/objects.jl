@@ -84,13 +84,16 @@ function drawobject(o::pngplot)
 end
 
 function drawpartial(o::pngplot,frac::Real)
-  #setopacity(o.opacity)
   savefig(plotpartial(o.x,o.y,p=frac,sz=o.size),"/tmp/manimjltemp.png")
   img = readpng("/tmp/manimjltemp.png")
-  #retplot = o
-  #retplot.pngimage = img
   o.pngimage = img
-  return retplot 
+  return o
+end
+
+function drawtransformed(o::pngplot,o2::pngplot,frac::Real)
+  savefig(plottransition(o.x,o.y,o2.x,o2.y,p=frac,sz=o.size),"/tmp/manimjltemp.png")
+  img = readpng("/tmp/manimjltemp.png")
+  o.pngimage = img
   return o
 end
 

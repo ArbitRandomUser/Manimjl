@@ -33,6 +33,17 @@ function UncreateObjectPartial(o::Object,p::Real, T::Real = 1; easefn = easeinou
   ret
 end
 
+function TransformPartial(o::Object,o2::Object,p::Real,T::Real=1.0,easefn=easeinoutcubic)
+  nframes = floor(Int,T*framerate)
+  t_index = length(o.transforms)
+  push!(o.transforms, x->x)
+  ret = ( () -> o.transforms[t_index+1] = x-> drawtransformed(x,o2,easefn(t,0,1,T)) for t in range(0,T,length=nframes) ) 
+end
+
+function Transform(o::Object,o2::Object,T::Real=1.0,easefn=easeinoutcubic)
+  TransformPartial(o,o2,1.0,T,easefn)
+end
+
 function LinearTransform(o::Object,T::Real=1.0,m::Matrix=Matrix(I,(3,3));  easefn = easingflat)
   nframes = floor(Int,T*framerate)
   #cur_ltransform = deepcopy(o.ltransform)

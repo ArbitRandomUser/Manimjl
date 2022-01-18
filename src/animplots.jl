@@ -26,14 +26,35 @@ function partialxy(x,y,p)
   return retx,rety 
 end
 
-@recipe function f(plt::plotpartial;p::Real,sz=(640,480))
+@recipe function f(plt::plotpartial;p::Real,sz=(640,480),border=0.2)
   xs,ys = plt.args
   size := sz 
   seriestype := :path
   @series begin
     subplots := 1
-    xlims --> (minimum(xs),maximum(xs))
-    ylims --> (minimum(ys),maximum(ys))
+    xlims --> (minimum(xs)-border,maximum(xs)+border)
+    ylims --> (minimum(ys)-border,maximum(ys)+border)
     partialxy(xs,ys,p)
+  end
+end
+
+@userplot plottransition
+
+function transit(xs1,ys1,xs2,ys2,p)
+  retx = (1.0-p)*xs1 .+ p*(xs2) 
+  rety = (1.0-p)*ys1 .+ p*(ys2) 
+  return retx,rety 
+end
+
+@recipe function f(plt::plottransition;p::Real=0.0,sz=(640,480),border=0.2)
+  xs1,ys1,xs2,ys2 = plt.args
+  size :=sz
+  seriestype := :path
+  @series begin
+    subplots :=1
+    #limits are from first plot
+    xlims --> (minimum(xs1)-border,maximum(xs1)+border)
+    ylims --> (minimum(ys1)-border,maximum(ys1)+border)
+    transit(xs1,ys1,xs2,ys2,p)
   end
 end
